@@ -2,10 +2,10 @@
 import { StatusBar } from 'expo-status-bar';
 import React, { useState } from 'react';
 import { StyleSheet, Text, View, TouchableOpacity, Alert } from 'react-native';
-import { Input, NativeBaseProvider, Button, Icon, Box, Image, AspectRatio } from 'native-base';
+import { Input, NativeBaseProvider, Button, Icon } from 'native-base';
 import { FontAwesome5 } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
-import { alignContent, flex, flexDirection, width } from 'styled-system';
+import { useSelector } from 'react-redux';
 
 
 function Login() {
@@ -13,8 +13,21 @@ function Login() {
     const [username,setEmail] = useState('');
     const [password,setPassword] = useState('')
 
+    const {UsersData} = useSelector((state)=>({
+        UsersData:state.UserReducers
+    }))
+
     const onPressLogin = () => {
-      Alert.alert(`Welcome back ${username}`)
+      const user =  UsersData.find((item)=>{
+        if(item.username == username && item.password == password){
+          return item
+        }
+      })
+      if(user){
+        Alert.alert('Welcome', `Hi! ${username}`)
+      }else{
+        Alert.alert("Invalid Credentials","Your username or password might be wrong")
+      }
     }
 
   return (

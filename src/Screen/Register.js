@@ -5,6 +5,8 @@ import { Input, NativeBaseProvider, Button, Icon, Box, Image, AspectRatio } from
 import { FontAwesome5, MaterialCommunityIcons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import { alignContent, flex, flexDirection, width } from 'styled-system';
+import { registerUserAction } from '../redux/actions/user';
+import { useDispatch } from 'react-redux';
 
 
 function Register() {
@@ -14,12 +16,15 @@ function Register() {
     const [password, setPassword] = useState('')
     const [confirmPassword, setConfirmPassword] = useState('')
 
+    const dispatch = useDispatch()
+
     const onPressSignup = () => (
-        setUsername(''),
-        setEmail(''),
-        setPassword(''),
-        setConfirmPassword(''),
-        Alert.alert('Account Created', `Welcome ${username}`)
+        // setUsername(''),
+        // setEmail(''),
+        // setPassword(''),
+        // setConfirmPassword(''),
+        Alert.alert('Account Created', `Welcome ${username}`),
+        dispatch(registerUserAction({username,password,email}))
     ) 
 
   return (
