@@ -1,34 +1,39 @@
-
-import { StatusBar } from 'expo-status-bar';
-import React, { useState } from 'react';
-import { StyleSheet, Text, View, TouchableOpacity, Alert } from 'react-native';
-import { Input, NativeBaseProvider, Button, Icon } from 'native-base';
-import { FontAwesome5 } from '@expo/vector-icons';
-import { useNavigation } from '@react-navigation/native';
-import { useSelector } from 'react-redux';
-
+import { StatusBar } from "expo-status-bar";
+import React, { useState } from "react";
+import { StyleSheet, Text, View, TouchableOpacity, Alert } from "react-native";
+import { Input, NativeBaseProvider, Button, Icon } from "native-base";
+import { FontAwesome5 } from "@expo/vector-icons";
+import { useNavigation } from "@react-navigation/native";
+import { useDispatch, useSelector } from "react-redux";
+import { loginUserAction } from "../redux/actions/user";
 
 function Login() {
-    const navigation = useNavigation();
-    const [username,setEmail] = useState('');
-    const [password,setPassword] = useState('')
+  const navigation = useNavigation();
+  const [username, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const dispatch = useDispatch();
 
-    const {UsersData} = useSelector((state)=>({
-        UsersData:state.UserReducers
-    }))
+  const { UsersData } = useSelector((state) => ({
+    UsersData: state.UserReducers,
+  }));
 
-    const onPressLogin = () => {
-      const user =  UsersData.find((item)=>{
-        if(item.username == username && item.password == password){
-          return item
-        }
-      })
-      if(user){
-        Alert.alert('Welcome', `Hi! ${username}`)
-      }else{
-        Alert.alert("Invalid Credentials","Your username or password might be wrong")
+  const onPressLogin = () => {
+    const user = UsersData.find((item) => {
+      if (item.username == username && item.password == password) {
+        return item;
       }
+    });
+
+    if (user) {
+      dispatch(loginUserAction({ username: username, email: user.email }));
+      Alert.alert("Welcome", `Hi! ${username}`);
+    } else {
+      Alert.alert(
+        "Invalid Credentials",
+        "Your username or password might be wrong"
+      );
     }
+  };
 
   return (
     <View style={styles.container}>
@@ -37,65 +42,53 @@ function Login() {
       </View>
       <View style={styles.text2}>
         <Text>Don't have an account? </Text>
-        <TouchableOpacity onPress={() => navigation.navigate("Register")} ><Text style={styles.signupText}> Sign up</Text></TouchableOpacity>
+        <TouchableOpacity onPress={() => navigation.navigate("Register")}>
+          <Text style={styles.signupText}> Sign up</Text>
+        </TouchableOpacity>
       </View>
 
       {/* Username or Email Input Field */}
       <View style={styles.buttonStyle}>
-        
         <View style={styles.usernameInput}>
           <Input
             InputLeftElement={
-              <Icon
-                as={<FontAwesome5 name="user-alt" />}
-                size="sm"
-                m={2}
-              />
+              <Icon as={<FontAwesome5 name="user-alt" />} size="sm" m={2} />
             }
             variant="outline"
-            onChangeText = {(val)=>{
-              setEmail(val)
+            onChangeText={(val) => {
+              setEmail(val);
             }}
             placeholder="Username"
-            value = {username}
-
+            value={username}
           />
         </View>
       </View>
 
       {/* Password Input Field */}
       <View style={styles.buttonStyleX}>
-        
         <View style={styles.usernameInput}>
           <Input
             InputLeftElement={
-              <Icon
-                as={<FontAwesome5 name="key" />}
-                size="sm"
-                m={2}
-              />
+              <Icon as={<FontAwesome5 name="key" />} size="sm" m={2} />
             }
             variant="outline"
-            onChangeText = {(val)=>{
-              setPassword(val)
+            onChangeText={(val) => {
+              setPassword(val);
             }}
             secureTextEntry={true}
             placeholder="Password"
-            value = {password}
+            value={password}
           />
         </View>
       </View>
 
       {/* Button */}
       <View style={styles.buttonStyle}>
-        <Button onPress = {onPressLogin} style={styles.buttonDesign}>
-            LOGIN
+        <Button onPress={onPressLogin} style={styles.buttonDesign}>
+          LOGIN
         </Button>
       </View>
 
-     
-
-     
       <StatusBar style="auto" />
     </View>
   );
@@ -104,55 +97,52 @@ function Login() {
 export default () => {
   return (
     <NativeBaseProvider>
-     
-        <Login />
-      
+      <Login />
     </NativeBaseProvider>
-  )
-}
-
+  );
+};
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
   },
   LoginText: {
-    marginTop:100,
-    fontSize:30,
-    fontWeight:'bold',
+    marginTop: 100,
+    fontSize: 30,
+    fontWeight: "bold",
   },
-  Middle:{
-    alignItems:'center',
-    justifyContent:'center',
+  Middle: {
+    alignItems: "center",
+    justifyContent: "center",
   },
-  text2:{
-    flexDirection:'row',
-    justifyContent:'center',
-    paddingTop:5
+  text2: {
+    flexDirection: "row",
+    justifyContent: "center",
+    paddingTop: 5,
   },
-  signupText:{
-    fontWeight:'bold'
+  signupText: {
+    fontWeight: "bold",
   },
-  emailField:{
-    marginTop:30,
-    marginLeft:15
+  emailField: {
+    marginTop: 30,
+    marginLeft: 15,
   },
-  usernameInput:{
-    marginTop:10,
-    marginRight:5
+  usernameInput: {
+    marginTop: 10,
+    marginRight: 5,
   },
-  buttonStyle:{
-    marginTop:30,
-    marginLeft:15,
-    marginRight:15
+  buttonStyle: {
+    marginTop: 30,
+    marginLeft: 15,
+    marginRight: 15,
   },
-  buttonStyleX:{
-    marginTop:12,
-    marginLeft:15,
-    marginRight:15
+  buttonStyleX: {
+    marginTop: 12,
+    marginLeft: 15,
+    marginRight: 15,
   },
-  buttonDesign:{
-    backgroundColor:'#026efd'}
-
+  buttonDesign: {
+    backgroundColor: "#026efd",
+  },
 });

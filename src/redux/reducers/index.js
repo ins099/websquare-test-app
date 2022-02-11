@@ -1,9 +1,10 @@
-import { combineReducers } from 'redux';
-import UserReducers from './UserReducers';
-
+import { combineReducers } from "redux";
+import UserReducers from "./UserReducers";
+import authenticateUser from "./authenticateUser";
 
 const appReducer = combineReducers({
-  UserReducers
+  UserReducers,
+  authenticateUser,
 });
 
 export default appReducer;

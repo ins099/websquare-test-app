@@ -7,6 +7,7 @@ import Register from '../Screen/Register';
 
 
 const AuthStack = () => {
+  // create stack function
   const Stack = createStackNavigator();
 
   return (

@@ -1,55 +1,45 @@
-import { StyleSheet, Text, View, Button, SafeAreaView } from "react-native";
-import React, { useEffect, useState } from "react";
-import { BarCodeScanner } from "expo-barcode-scanner";
-import { StatusBar } from 'expo-status-bar';
-
+import { StyleSheet, Text, Button, View } from "react-native";
+import React, { useState } from "react";
+import { useSelector } from "react-redux";
+import QrCodeComponent from "../Components/QrCodeComponent";
+import { NativeBaseProvider } from "native-base";
 
 const QrCode = () => {
-  const [hasPermission, setHasPermission] = useState(null);
-  const [scanned, setScanned] = useState(false);
+  // get user detail from state
+  const { User } = useSelector((state) => ({
+    User: state?.authenticateUser,
+  }));
 
-  useEffect(() => {
-    (async () => {
-      const { status } = await BarCodeScanner.requestPermissionsAsync();
-      setHasPermission(status === "granted");
-    })();
-  }, []);
+  // check scan status
+  const [scan, setScan] = useState(false);
 
-  const handleBarCodeScanned = ({ type, data }) => {
-    setScanned(true);
-    console.log(data);
-    // alert(`Bar code with type ${type} and data ${data} has been scanned!`);
-  };
-
-  if (hasPermission === null) {
-    return <Text>Requesting for camera permission</Text>;
-  }
-  if (hasPermission === false) {
-    return <Text>No access to camera</Text>;
-  }
-
-  return (
-    <View style={{ flex: 1 }}>
-      <BarCodeScanner
-        onBarCodeScanned={scanned ? undefined : handleBarCodeScanned}
-        style={StyleSheet.absoluteFillObject}
-      />
-      {scanned && (
-        <View style={styles.button}>
-          <Button
-            title={"Tap to Scan Again"}
-            onPress={() => setScanned(false)}
-          />
+  if (scan) {
+    return <QrCodeComponent User={User} setScan={() => setScan(!scan)} />;
+  } else {
+    return (
+      <NativeBaseProvider>
+        <View style={styles.container}>
+          <View style={{ width: "80%", justifyContent: "center" }}>
+            <Text style={styles.qrCode}>QR CODE SCANNER</Text>
+            <Button title="Scan" onPress={() => setScan(true)} />
+          </View>
         </View>
-      )}
-      <StatusBar style="dark" />
-      
-    </View>
-  );
+      </NativeBaseProvider>
+    );
+  }
 };
 
 export default QrCode;
 
 const styles = StyleSheet.create({
-  button: { position: "absolute", bottom: 20, alignSelf: "center" },
+  qrCode: {
+    fontWeight: "bold",
+    fontSize: 35,
+  },
+  container: {
+    justifyContent: "center",
+    height: "100%",
+    alignItems: "center",
+    width: "100%",
+  },
 });
